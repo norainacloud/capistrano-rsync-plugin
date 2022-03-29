@@ -51,14 +51,20 @@ class Capistrano::SCM
         DESC
         task :update_local_cache do
           run_locally do
-            unless File.exist?("#{fetch(:rsync_local_cache)}/.git")
+            unless File.exist?(fetch(:rsync_local_cache)})
               FileUtils.mkdir_p(fetch(:rsync_local_cache))
-              execute :git, :clone, '--quiet', repo_url, fetch(:rsync_local_cache)
             end
-            within fetch(:rsync_local_cache) do
-              execute :git, :fetch, '--quiet', '--all', '--prune'
-              execute :git, :checkout, fetch(:branch)
-              execute :git, :reset, '--quiet', '--hard', "origin/#{fetch(:branch)}"
+            if fetch(:rsync_archive_path)
+              execute :tar, '-xzf', fetch(:rsync_archive_path), '-C',  fetch(:rsync_local_cache)
+            else
+              unless File.exist?("#{fetch(:rsync_local_cache)}/.git")
+                execute :git, :clone, '--quiet', repo_url, fetch(:rsync_local_cache)
+              end
+              within fetch(:rsync_local_cache) do
+                execute :git, :fetch, '--quiet', '--all', '--prune'
+                execute :git, :checkout, fetch(:branch)
+                execute :git, :reset, '--quiet', '--hard', "origin/#{fetch(:branch)}"
+              end
             end
           end
         end
