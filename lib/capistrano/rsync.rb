@@ -38,7 +38,7 @@ class Capistrano::SCM
           on release_roles :all do |role|
             host_spec = role.hostname
             host_spec = "#{role.user}@#{host_spec}" if role.user
-            host_spec = "-e 'ssh #{role.port}' #{host_spec}" if role.port
+            host_spec = "-e 'ssh -p #{role.port}' #{host_spec}" if role.port
             run_locally do
               execute :rsync, *fetch(:rsync_options), "#{fetch(:rsync_local_cache)}/", "#{host_spec}:#{fetch(:deploy_to)}/#{fetch(:rsync_remote_cache)}/"
             end
