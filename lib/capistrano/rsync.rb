@@ -13,7 +13,7 @@ class Capistrano::SCM
       # source for the release. Saves needing to transfer all the source files for each release.
       set_if_empty :rsync_remote_cache, 'rsync-deploy'
 
-      set_if_empty :enable_set_current_revision, true
+      set_if_empty :enable_set_current_revision, false
     end
 
     def define_tasks
