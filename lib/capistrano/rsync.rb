@@ -12,6 +12,8 @@ class Capistrano::SCM
       # Remote cache on the server. Will be synced with the local cache before each release, and then used as
       # source for the release. Saves needing to transfer all the source files for each release.
       set_if_empty :rsync_remote_cache, 'rsync-deploy'
+
+      set_if_empty :enable_set_current_revision, true
     end
 
     def define_tasks
@@ -77,8 +79,10 @@ class Capistrano::SCM
         DESC
         task :set_current_revision do
           run_locally do
-            within fetch(:rsync_local_cache) do
-              set :current_revision, capture(:git, "rev-list --max-count=1 #{fetch(:branch)}")
+            if fetch(:enable_set_current_revision) == true
+              within fetch(:rsync_local_cache) do
+                set :current_revision, capture(:git, "rev-list --max-count=1 #{fetch(:branch)}")
+              end
             end
           end
         end
