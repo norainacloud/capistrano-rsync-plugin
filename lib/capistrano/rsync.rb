@@ -51,7 +51,7 @@ class Capistrano::SCM
         DESC
         task :update_local_cache do
           run_locally do
-            unless File.exist?(fetch(:rsync_local_cache)})
+            unless File.exist?(fetch(:rsync_local_cache))
               FileUtils.mkdir_p(fetch(:rsync_local_cache))
             end
             if fetch(:rsync_archive_path)
